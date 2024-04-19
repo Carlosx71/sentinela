@@ -1,5 +1,6 @@
 {
   "name": "site-sentinela",
+  "homepage": "https://carlosx71.github.io/sentinela/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
