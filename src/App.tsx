@@ -21,8 +21,9 @@ import homemVigia from 'assets/images/homem-vendo-video.jpg';
 import escolta from 'assets/images/mulher-de-seguranca-na-frente-do-carro.jpg';
 import ServiceCard from 'components/ServicesCards';
 
-const spacing = 5;
 const App = () => {
+  const spacing = 5;
+
   return (
     <LocalizationProvider
       dateAdapter={AdapterDayjs}
@@ -82,6 +83,8 @@ const App = () => {
                     title="Vigilância"
                     description="A Sentinela oferece serviços de vigilância com profissionais treinados e equipamentos de alta tecnologia para garantir a segurança de empresas e residências, visando proporcionar tranquilidade e proteção aos clientes de forma preventiva."
                     image={escoltaArmada}
+                    scrollYPosition={1030}
+                    timeout={0}
                   />
                 </Grid>
                 <Grid item xs={12} md={4}>
@@ -89,6 +92,8 @@ const App = () => {
                     title="Escolta Armada"
                     description="A Sentinela oferece serviços de Escolta Armada com profissionais treinados e equipados para proteger cargas e valores durante o transporte, garantindo a segurança e integridade dos clientes."
                     image={escolta}
+                    scrollYPosition={1030}
+                    timeout={1000}
                   />
                 </Grid>
                 <Grid item xs={12} md={4}>
@@ -96,6 +101,8 @@ const App = () => {
                     title="Segurança Pessoal"
                     description="A Sentinela oferece segurança pessoal com profissionais treinados e capacitados, usando técnicas avançadas e equipamentos de alta tecnologia para proteger os clientes, garantindo tranquilidade e bem-estar em diversas situações."
                     image={segurancaPessoal}
+                    scrollYPosition={1030}
+                    timeout={1500}
                   />
                 </Grid>
               </Grid>

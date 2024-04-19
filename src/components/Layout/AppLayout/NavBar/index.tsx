@@ -21,8 +21,6 @@ import useStyles from './styles';
 const pages = [
   { title: 'Quem Somos', anchor: 'aboutCompany' },
   { title: 'Serviços', anchor: 'services' },
-  { title: 'Propósito', anchor: 'purpose' },
-  // { title: 'Parceiros', anchor: 'partners' },
   {
     title: 'Trabalhe conosco',
     anchor: undefined,
