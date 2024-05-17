@@ -19,7 +19,7 @@ const Footer = () => {
   const classes = useStyles();
 
   const cssIcon = {
-    color: '#2e5da1',
+    color: '#cdaa5d',
     marginRight: '10px',
   };
 

@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme: Theme) => {
       textDecoration: 'none',
     },
     linkText: {
-      color: '#2e5da1',
+      color: '#cdaa5d',
     },
   };
 });

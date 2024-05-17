@@ -7,11 +7,9 @@ import {
   Typography,
   Menu,
   Container,
-  Button,
   MenuItem,
   Hidden,
   Link,
-  Stack,
   Avatar,
 } from '@mui/material';
 import { Menu as MenuIcon } from '@mui/icons-material';

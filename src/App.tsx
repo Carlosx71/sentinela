@@ -61,12 +61,12 @@ const App = () => {
                     sx={{
                       maxWidth: '180px',
                       padding: '8px',
-                      borderLeft: '4px solid #2e5da1',
+                      borderLeft: '4px solid #cdaa5d',
                     }}
                   >
                     <Typography
                       variant="h3"
-                      color="#2e5da1"
+                      color="#cdaa5d"
                       textAlign="center"
                       fontWeight="500"
                       sx={{
@@ -81,7 +81,8 @@ const App = () => {
                 <Grid item xs={12} md={4}>
                   <ServiceCard
                     title="Vigilância"
-                    description="A Sentinela oferece serviços de vigilância com profissionais treinados e equipamentos de alta tecnologia para garantir a segurança de empresas e residências, visando proporcionar tranquilidade e proteção aos clientes de forma preventiva."
+                    description="A Sentinela oferece serviços de vigilância com profissionais treinados e equipamentos de alta tecnologia para garantir a segurança de empresas, condomínios, eventos e residências, 
+                    visando proporcionar tranquilidade e proteção aos clientes de forma preventiva e ativa."
                     image={escoltaArmada}
                     scrollYPosition={1030}
                     timeout={0}

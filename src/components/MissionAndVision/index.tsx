@@ -39,7 +39,7 @@ const Identify = () => {
             <Grid item>
               <Typography
                 variant="h3"
-                color="#2e5da1"
+                color="#cdaa5d"
                 textAlign="center"
                 fontWeight="500"
                 sx={stylesTitle}
@@ -72,7 +72,7 @@ const Identify = () => {
             <Grid item>
               <Typography
                 variant="h3"
-                color="#2e5da1"
+                color="#cdaa5d"
                 textAlign="center"
                 fontWeight="500"
                 sx={stylesTitle}
@@ -106,7 +106,7 @@ const Identify = () => {
             <Grid item>
               <Typography
                 variant="h3"
-                color="#2e5da1"
+                color="#cdaa5d"
                 textAlign="center"
                 fontWeight="500"
                 sx={stylesTitle}

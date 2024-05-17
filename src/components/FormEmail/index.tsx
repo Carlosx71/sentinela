@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import {
   Fade,
@@ -9,43 +10,90 @@ import {
   Typography,
   SxProps,
   Theme,
+  MenuItem,
+  Switch,
+  FormGroup,
+  FormControlLabel,
+  Divider,
+  Link,
 } from '@mui/material';
 import { contact } from 'interfaces/contact';
 import { useFormik } from 'formik';
 import emailjs from 'emailjs-com';
 import validationSchema from './validationSchema';
 import { maskCellPhone } from 'utils/string/maks';
+import cities from 'utils/data/cities';
+import { getCep } from 'services/viaCep';
 
 const FormEmail = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [citiesSelect, setCitiesSelect] = useState<{ cidade: string }[]>([
+    { cidade: '' },
+  ]);
+
+  const [stateSelect] = useState(
+    cities
+      .filter((value, index, self) => {
+        return (
+          // eslint-disable-next-line operator-linebreak
+          index ===
+          self.findIndex((t) => {
+            return t.estado === value.estado;
+          })
+        );
+      })
+      .map(({ estado }) => {
+        return { estado };
+      })
+      .sort((a, b) => {
+        // eslint-disable-next-line no-nested-ternary
+        return a.estado < b.estado ? -1 : a.estado > b.estado ? 1 : 0;
+      })
+  );
+
   const handleBackDrop = () => {
     setOpen(!open);
   };
 
-  const initialValues = {
+  const sectionValues = ['Empresa', 'Escola', 'Evento', 'Condomínio', 'Outros'];
+
+  const initialValues: contact = {
     nome: '',
     email: '',
     telefone: '',
-    assunto: '',
-    mensagem: '',
+    obs: '',
+    bairro: '',
+    cep: '',
+    cidade: '',
+    complemento: '',
+    endereco: '',
+    estado: '',
+    numero: '',
+    quantidade: 0,
+    setor: '',
+    sistemaVigilancia: false,
   };
 
   const handleEmail = async (event: React.FormEvent<HTMLFormElement>) => {
-    const response = await emailjs.sendForm(
+    let payload = {};
+    const formData = new FormData(event.currentTarget);
+    for (let pair of formData.entries()) {
+      console.log(pair[0] + ', ' + pair[1]);
+      payload = { ...payload, [pair[0]]: pair[1] };
+    }
+    console.log(payload);
+
+    await emailjs.sendForm(
       'service_iqw5q0o',
-      'template_p60go5h',
+      'template_lfo4hem',
       event.currentTarget,
       'JpNn_D2Xh-5ZIKaca'
     );
+
     formik.setValues(initialValues);
     formik.setTouched({});
-
-    if (response.status === 200) {
-      setOpen(false);
-    } else {
-      setOpen(false);
-    }
+    setOpen(false);
   };
 
   const formik = useFormik<contact>({
@@ -58,7 +106,7 @@ const FormEmail = () => {
   });
 
   const handleScroll = () => {
-    const position = window.pageYOffset;
+    const position = window.scrollY;
     setScrollPosition(position);
   };
 
@@ -70,14 +118,67 @@ const FormEmail = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (formik.values.estado.length === 2) {
+      setCitiesSelect(
+        cities
+          .filter((value) => {
+            return value.estado === formik.values.estado;
+          })
+          .map(({ cidade }) => {
+            return { cidade };
+          })
+      );
+      if (formik.values.cidade !== '') {
+        formik.setFieldValue('cidade', formik.values.cidade);
+      }
+    }
+  }, [formik.values.estado]);
+
+  useEffect(() => {
+    const fillCep = async () => {
+      if (formik.values.cep.length === 8) {
+        setOpen(true);
+        const res = await getCep(formik.values.cep);
+
+        const fields: { [key: string]: string } = {
+          endereco: res.logradouro,
+          complemento: res.complemento,
+          bairro: res.bairro,
+          cidade: res.localidade.toUpperCase().trim(),
+          estado: res.uf,
+        };
+
+        Object.keys(fields).forEach((field) => {
+          return formik.setFieldValue(`${field}`, fields[field]);
+        });
+        setOpen(false);
+      } else if (formik.values.cep.length === 0) {
+        const fields = [
+          'endereco',
+          'complemento',
+          'bairro',
+          'cidade',
+          'estado',
+        ];
+
+        fields.forEach((field) => {
+          return formik.setFieldValue(`${field}`, '');
+        });
+      }
+    };
+    fillCep();
+  }, [formik.values.cep]);
+
   const ruleTextFiled: SxProps<Theme> = {
     '& .MuiFormLabel-root': {
-      color: '#2e5da1',
+      color: '#cdaa5d',
     },
     '& .Mui-focused .MuiFormLabel-root': {
-      color: '#2e5da1',
+      color: '#cdaa5d',
     },
   };
+
   return (
     <form
       onSubmit={async (event) => {
@@ -94,7 +195,7 @@ const FormEmail = () => {
           >
             <Typography
               variant="h3"
-              color="#2e5da1"
+              color="#cdaa5d"
               textAlign="center"
               fontWeight="500"
               sx={{ lineHeight: '1.22222' }}
@@ -106,7 +207,7 @@ const FormEmail = () => {
         <Grid item xs={12}>
           <Backdrop
             sx={{
-              color: '#2e5da1',
+              color: '#cdaa5d',
               zIndex: (theme) => theme.zIndex.drawer + 1,
             }}
             open={open}
@@ -168,48 +269,295 @@ const FormEmail = () => {
           </Grid>
         </Grid>
         <Grid item xs={12}>
-          <TextField
-            sx={ruleTextFiled}
-            required
-            id="assunto"
-            name="assunto"
-            label="Assunto"
-            variant="outlined"
-            fullWidth
-            value={formik.values.assunto}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.assunto && Boolean(formik.errors.assunto)}
-            helperText={formik.touched.assunto && formik.errors.assunto}
-          />
+          <Grid container spacing={2}>
+            <Grid item xs={12} lg={2}>
+              <TextField
+                sx={ruleTextFiled}
+                required
+                id="cep"
+                name="cep"
+                label="CEP"
+                variant="outlined"
+                fullWidth
+                value={formik.values.cep}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.cep && Boolean(formik.errors.cep)}
+                helperText={formik.touched.cep && formik.errors.cep}
+              />
+            </Grid>
+
+            <Grid item xs={12} lg={4}>
+              <TextField
+                sx={ruleTextFiled}
+                required
+                id="endereco"
+                name="endereco"
+                label="Endereço"
+                variant="outlined"
+                fullWidth
+                value={formik.values.endereco}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.endereco && Boolean(formik.errors.endereco)
+                }
+                helperText={formik.touched.endereco && formik.errors.endereco}
+              />
+            </Grid>
+
+            <Grid item xs={12} lg={2}>
+              <TextField
+                sx={ruleTextFiled}
+                required
+                id="numero"
+                name="numero"
+                label="Número"
+                variant="outlined"
+                fullWidth
+                value={formik.values.numero}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.numero && Boolean(formik.errors.numero)}
+                helperText={formik.touched.numero && formik.errors.numero}
+              />
+            </Grid>
+
+            <Grid item xs={12} lg={4}>
+              <TextField
+                sx={ruleTextFiled}
+                required
+                id="bairro"
+                name="bairro"
+                label="Bairro"
+                variant="outlined"
+                fullWidth
+                value={formik.values.bairro}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.bairro && Boolean(formik.errors.bairro)}
+                helperText={formik.touched.bairro && formik.errors.bairro}
+              />
+            </Grid>
+
+            <Grid item xs={12} lg={4}>
+              <TextField
+                sx={ruleTextFiled}
+                id="complemento"
+                name="complemento"
+                label="Complemento"
+                variant="outlined"
+                fullWidth
+                value={formik.values.complemento}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.complemento &&
+                  Boolean(formik.errors.complemento)
+                }
+                helperText={
+                  formik.touched.complemento && formik.errors.complemento
+                }
+              />
+            </Grid>
+
+            <Grid item xs={12} lg={4}>
+              <TextField
+                sx={ruleTextFiled}
+                required
+                id="estado"
+                name="estado"
+                label="Estado"
+                variant="outlined"
+                fullWidth
+                select
+                value={formik.values.estado}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.estado && Boolean(formik.errors.estado)}
+                helperText={formik.touched.estado && formik.errors.estado}
+              >
+                {stateSelect.map(({ estado }) => (
+                  <MenuItem
+                    key={estado}
+                    value={estado}
+                    sx={{ color: '#cdaa5d' }}
+                  >
+                    {estado}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+
+            <Grid item xs={12} lg={4}>
+              <TextField
+                sx={ruleTextFiled}
+                required
+                id="cidade"
+                name="cidade"
+                label="Cidade"
+                variant="outlined"
+                fullWidth
+                select
+                value={formik.values.cidade}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.cidade && Boolean(formik.errors.cidade)}
+                helperText={formik.touched.cidade && formik.errors.cidade}
+              >
+                {citiesSelect.map(({ cidade }, index) => {
+                  return (
+                    // eslint-disable-next-line react/no-array-index-key
+                    <MenuItem
+                      key={index}
+                      value={cidade}
+                      sx={{ color: '#cdaa5d' }}
+                    >
+                      {cidade}
+                    </MenuItem>
+                  );
+                })}
+              </TextField>
+            </Grid>
+          </Grid>
+        </Grid>
+
+        <Grid item xs={12}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} lg={6}>
+              <TextField
+                sx={ruleTextFiled}
+                required
+                id="setor"
+                name="setor"
+                label="Setor"
+                variant="outlined"
+                fullWidth
+                select
+                value={formik.values.setor}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.setor && Boolean(formik.errors.setor)}
+                helperText={formik.touched.setor && formik.errors.setor}
+              >
+                {sectionValues.map((value, index) => {
+                  return (
+                    // eslint-disable-next-line react/no-array-index-key
+                    <MenuItem
+                      key={index}
+                      value={value}
+                      sx={{ color: '#cdaa5d' }}
+                    >
+                      {value}
+                    </MenuItem>
+                  );
+                })}
+              </TextField>
+            </Grid>
+            <Grid item xs={12} lg={2}>
+              <TextField
+                sx={ruleTextFiled}
+                required
+                id="quantidade"
+                name="quantidade"
+                label="Quantidade"
+                variant="outlined"
+                fullWidth
+                type="number"
+                value={formik.values.quantidade}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.quantidade && Boolean(formik.errors.quantidade)
+                }
+                helperText={
+                  formik.touched.quantidade && formik.errors.quantidade
+                }
+              />
+            </Grid>
+            <Grid item xs={12} lg={4}>
+              <FormGroup>
+                <FormControlLabel
+                  labelPlacement="start"
+                  value={formik.values.sistemaVigilancia}
+                  onChange={formik.handleChange}
+                  name="sistemaVigilancia"
+                  control={
+                    <Switch
+                      inputProps={{ 'aria-label': 'vigilancia' }}
+                      color="warning"
+                    />
+                  }
+                  label="Controlar sistema de câmeras/vigilância?"
+                />
+              </FormGroup>
+            </Grid>
+          </Grid>
         </Grid>
         <Grid item xs={12}>
           <TextField
             sx={ruleTextFiled}
-            required
-            id="mensagem"
-            name="mensagem"
-            label="Mensagem"
+            id="obs"
+            name="obs"
+            label="obs"
             multiline
             rows={10}
             variant="outlined"
             fullWidth
-            value={formik.values.mensagem}
+            value={formik.values.obs}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            error={formik.touched.mensagem && Boolean(formik.errors.mensagem)}
-            helperText={formik.touched.mensagem && formik.errors.mensagem}
+            error={formik.touched.obs && Boolean(formik.errors.obs)}
+            helperText={formik.touched.obs && formik.errors.obs}
           />
         </Grid>
         <Grid item xs={12}>
-          <Button
-            variant="contained"
-            type="submit"
-            sx={{ color: 'white', backgroundColor: '#2e5da1' }}
-            fullWidth
-          >
-            Enviar
-          </Button>
+          <Grid container spacing={2}>
+            <Grid item xs={5}>
+              <Button
+                variant="contained"
+                disabled={!formik.isValid}
+                type="submit"
+                sx={{ backgroundColor: '#cdaa5d' }}
+                fullWidth
+              >
+                Email
+              </Button>
+            </Grid>
+            <Grid item xs={2}>
+              <Divider>OU</Divider>
+            </Grid>
+            <Grid item xs={5}>
+              <Button
+                variant="contained"
+                disabled={!formik.isValid}
+                component={Link}
+                target="_blank"
+                rel="noreferrer"
+                href={`https://api.whatsapp.com/send?phone=5519999245480&text=Olá! Meu no é ${
+                  formik.values.nome
+                }, email ${formik.values.email}, telefone ${
+                  formik.values.telefone
+                }, gostaria de um orçamento! Endereço: ${
+                  formik.values.endereco
+                }, número: ${formik.values.numero}, complemento: ${
+                  formik.values.complemento
+                }, bairro: ${formik.values.bairro}, cidade: ${
+                  formik.values.cidade
+                }, estado: ${formik.values.estado}, setor: ${
+                  formik.values.setor
+                }, quantidade: ${
+                  formik.values.quantidade
+                }, sistema de vigilância: ${
+                  formik.values.sistemaVigilancia ? 'Sim' : 'Não'
+                }, observações: ${formik.values.obs}`}
+                sx={{ backgroundColor: '#cdaa5d' }}
+                fullWidth
+              >
+                WhatsApp
+              </Button>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
     </form>
