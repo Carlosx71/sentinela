@@ -9,7 +9,11 @@ const validationSchema: Yup.SchemaOf<Partial<contact>> = Yup.object({
     .email('Por favor, insira um email válido')
     .trim()
     .required(requiredMessage),
-  telefone: Yup.string().trim().required(requiredMessage),
+  telefone: Yup.string()
+    .trim()
+    .min(14, 'O telefone deve ter no mínimo 14 caracteres.')
+    .max(15, 'O telefone deve ter no máximo 15 caracteres.')
+    .required(requiredMessage),
   bairro: Yup.string().trim().required(requiredMessage),
   cep: Yup.string().trim().required(requiredMessage),
   cidade: Yup.string().trim().required(requiredMessage),

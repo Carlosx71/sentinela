@@ -32,7 +32,7 @@ const Footer = () => {
               <Stack spacing={1} width="100%">
                 <Box display="flex" alignItems="center">
                   <Typography variant="subtitle1" component="p">
-                    Instalações industriais
+                    Serviço de Segurança
                   </Typography>
                 </Box>
                 <Box
@@ -62,7 +62,7 @@ const Footer = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      (99) 99999-9999
+                      (19) 99622-6991
                     </Link>
                   </Typography>
                 </Box>

@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/sentinela/static/css/main.105f3d36.css",
-    "main.js": "/sentinela/static/js/main.acb4246e.js",
+    "main.js": "/sentinela/static/js/main.2291b089.js",
     "static/media/mulher-de-seguranca-na-frente-do-carro.jpg": "/sentinela/static/media/mulher-de-seguranca-na-frente-do-carro.ec4b66ef792b07a788c9.jpg",
     "static/media/cliente-de-protecao-de-seguranca2.jpg": "/sentinela/static/media/cliente-de-protecao-de-seguranca2.1984f605eaca242aa4f5.jpg",
     "static/media/cliente-de-protecao-do-homem-de-seguranca.jpg": "/sentinela/static/media/cliente-de-protecao-do-homem-de-seguranca.f9aab3fdb2ec8132cd7a.jpg",
@@ -43,10 +43,10 @@
     "static/media/roboto-greek-ext-700-normal.woff2": "/sentinela/static/media/roboto-greek-ext-700-normal.bd9854c751441ccc1a70.woff2",
     "index.html": "/sentinela/index.html",
     "main.105f3d36.css.map": "/sentinela/static/css/main.105f3d36.css.map",
-    "main.acb4246e.js.map": "/sentinela/static/js/main.acb4246e.js.map"
+    "main.2291b089.js.map": "/sentinela/static/js/main.2291b089.js.map"
   },
   "entrypoints": [
     "static/css/main.105f3d36.css",
-    "static/js/main.acb4246e.js"
+    "static/js/main.2291b089.js"
   ]
 }

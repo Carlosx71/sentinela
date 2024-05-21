@@ -18,10 +18,10 @@ import {
   Link,
 } from '@mui/material';
 import { contact } from 'interfaces/contact';
-import { useFormik } from 'formik';
+import { FormikConfig, useFormik } from 'formik';
 import emailjs from 'emailjs-com';
 import validationSchema from './validationSchema';
-import { maskCellPhone } from 'utils/string/maks';
+import { maskCellPhone, maskCep } from 'utils/string/maks';
 import cities from 'utils/data/cities';
 import { getCep } from 'services/viaCep';
 
@@ -179,6 +179,28 @@ const FormEmail = () => {
     },
   };
 
+  const generateWhatsAppMessage = (
+    values: FormikConfig<contact>['initialValues']
+  ) => {
+    let message = `Olá! Meu nome é ${values.nome}, email ${values.email}, telefone ${values.telefone}, gostaria de um orçamento! Endereço: ${values.endereco}, número: ${values.numero}`;
+
+    if (values.complemento) {
+      message += `, complemento: ${values.complemento}`;
+    }
+
+    message += `, bairro: ${values.bairro}, cidade: ${values.cidade}, estado: ${
+      values.estado
+    }, setor: ${values.setor}, quantidade: ${
+      values.quantidade
+    }, sistema de vigilância: ${values.sistemaVigilancia ? 'Sim' : 'Não'}`;
+
+    if (values.obs) {
+      message += `, observações: ${values.obs}`;
+    }
+
+    return message;
+  };
+
   return (
     <form
       onSubmit={async (event) => {
@@ -279,7 +301,8 @@ const FormEmail = () => {
                 label="CEP"
                 variant="outlined"
                 fullWidth
-                value={formik.values.cep}
+                inputProps={{ maxLength: 9 }}
+                value={maskCep(formik.values.cep)}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={formik.touched.cep && Boolean(formik.errors.cep)}
@@ -499,7 +522,7 @@ const FormEmail = () => {
             sx={ruleTextFiled}
             id="obs"
             name="obs"
-            label="obs"
+            label="Observação"
             multiline
             rows={10}
             variant="outlined"
@@ -534,23 +557,9 @@ const FormEmail = () => {
                 component={Link}
                 target="_blank"
                 rel="noreferrer"
-                href={`https://api.whatsapp.com/send?phone=5519999245480&text=Olá! Meu no é ${
-                  formik.values.nome
-                }, email ${formik.values.email}, telefone ${
-                  formik.values.telefone
-                }, gostaria de um orçamento! Endereço: ${
-                  formik.values.endereco
-                }, número: ${formik.values.numero}, complemento: ${
-                  formik.values.complemento
-                }, bairro: ${formik.values.bairro}, cidade: ${
-                  formik.values.cidade
-                }, estado: ${formik.values.estado}, setor: ${
-                  formik.values.setor
-                }, quantidade: ${
-                  formik.values.quantidade
-                }, sistema de vigilância: ${
-                  formik.values.sistemaVigilancia ? 'Sim' : 'Não'
-                }, observações: ${formik.values.obs}`}
+                href={`https://api.whatsapp.com/send?phone=5519996226991&text=${encodeURIComponent(
+                  generateWhatsAppMessage(formik.values)
+                )}`}
                 sx={{ backgroundColor: '#cdaa5d' }}
                 fullWidth
               >
